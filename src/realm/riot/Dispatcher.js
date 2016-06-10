@@ -9,6 +9,17 @@ var url2Method = function(url) {
    return "on" + url[0].toUpperCase() + url.slice(1, url.length);
 }
 
+document.querySelector('body').addEventListener('click', function(e) {
+   var target = e.target;
+   if (target.nodeName === "A") {
+      if (target.getAttribute('href')) {
+         PushState.force({}, target.getAttribute('href'));
+         e.preventDefault();
+         e.stopPropagation();
+      }
+   }
+})
+
 class Dispatcher {
 
    /**
@@ -204,19 +215,6 @@ class Dispatcher {
       self.mount('body', data)
 
    }
-
-   patchLinks(element) {
-      var links = element.querySelectorAll('a');
-      _.each(links, function(link) {
-         link.addEventListener('click', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-
-            PushState.force({}, this.getAttribute('href'));
-         })
-      });
-   }
-
    mount(element, data, deadEnd) {
       var self = this;
       var tag = riot.mount(element, data.tag, {
@@ -224,7 +222,6 @@ class Dispatcher {
       });
       var targetTag = tag[0];
       if (!deadEnd) {
-         self.patchLinks(targetTag.root);
          var mountTarget = targetTag.root.querySelector("*[route]");
          if (mountTarget) {
             data.parent.$$router.data = data;

@@ -9,7 +9,7 @@ class Server extends Express {
       this.serve("/dependencies/", "@default");
       this.serve("/build/", "@home/build");
       this.serve("/lib/riot", "@home/node_modules/riot/");
-      
+
       this.addScripts([
          '/dependencies/lodash.min.js',
          '/dependencies/realm.js',

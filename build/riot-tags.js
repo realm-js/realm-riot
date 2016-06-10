@@ -16,6 +16,12 @@ riot.tag2('landing', '<h1>Hello world {user.name}</h1> asdf <form><ui-input mode
 riot.tag2('test-route', '<h1>TEST ROUTE!!</h1><div route style="border:1px solid black"></div>', '', '', function(opts) {
 });
 
+riot.tag2('user-active', '<h3>Active users</h3>', '', '', function(opts) {
+});
+
+riot.tag2('user-index', '<h2>User index</h2><div style="border:1px solid pink" route></div>', '', '', function(opts) {
+});
+
 riot.tag2('place-details', '<h2>this is place details</h2><div style="margin-left:100px; border:1px solid blue" route></div>', '', '', function(opts) {
 });
 
@@ -23,12 +29,6 @@ riot.tag2('place-index', '<h2>this is place</h2><div style="border:1px solid red
 });
 
 riot.tag2('place-tab', '<h2>this is place tab!!!</h2>', '', '', function(opts) {
-});
-
-riot.tag2('user-active', '<h3>Active users</h3>', '', '', function(opts) {
-});
-
-riot.tag2('user-index', '<h2>User index</h2><div style="border:1px solid pink" route></div>', '', '', function(opts) {
 });
 
 
