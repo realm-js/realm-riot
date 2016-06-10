@@ -4,7 +4,9 @@ realm.module("app.Application",["app.routes.IndexRoute"],function(IndexRoute){ v
 
 class Application {
    static main() {
-      IndexRoute.start();
+      realm.requirePackage('realm.tags').then(function() {
+         IndexRoute.start();
+      });
    }
 }
 

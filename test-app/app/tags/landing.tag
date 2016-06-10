@@ -1,5 +1,9 @@
 <landing>
-   <h1>Hello world</h1>
+   <h1>Hello world {user.name}</h1>
+   asdf
+   <form>
+      <ui-input model="user.name"></ui-input>
+   </form>
    <div>
       <a href="/">HOME</a>
    </div>
@@ -26,5 +30,13 @@
    </div>
    Shit goes here:--->
    <div route></div>
-   <script></script>
+   <script>
+      this.user = {
+         name: "hello"
+      }
+      var self = this;
+      this.on("model-changed", function (name, value) {
+         self.update();
+      });
+   </script>
 </landing>

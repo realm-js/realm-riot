@@ -3,7 +3,14 @@
 riot.tag2('hello', '<div> this is Hello </div>', '', '', function(opts) {
 });
 
-riot.tag2('landing', '<h1>Hello world</h1><div><a href="/">HOME</a></div><div><a href="/place/some-route-here/">To a place</a></div><div><a href="/place/some-route-here/pukka">To a place tab</a></div><div><a href="/user">To user</a></div><div><a href="/user/active">To active user</a></div><div><a href="/test">To TEST</a></div><div><a href="/test/hello">To test hello</a></div> Shit goes here:---><div route></div>', '', '', function(opts) {
+riot.tag2('landing', '<h1>Hello world {user.name}</h1> asdf <form><ui-input model="user.name"></ui-input></form><div><a href="/">HOME</a></div><div><a href="/place/some-route-here/">To a place</a></div><div><a href="/place/some-route-here/pukka">To a place tab</a></div><div><a href="/user">To user</a></div><div><a href="/user/active">To active user</a></div><div><a href="/test">To TEST</a></div><div><a href="/test/hello">To test hello</a></div> Shit goes here:---><div route></div>', '', '', function(opts) {
+      this.user = {
+         name: "hello"
+      }
+      var self = this;
+      this.on("model-changed", function (name, value) {
+         self.update();
+      });
 });
 
 riot.tag2('test-route', '<h1>TEST ROUTE!!</h1><div route style="border:1px solid black"></div>', '', '', function(opts) {

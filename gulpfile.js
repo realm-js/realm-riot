@@ -37,6 +37,21 @@ gulp.task("build-test", function(done) {
    return realm.transpiler2.universal("test-app/", "build/app");
 });;
 
+gulp.task("ui-riot", function() {
+   return gulp.src("src/ui/**/*.tag")
+      .pipe(riot({
+         compact: true
+      }))
+      .pipe(realm.transpiler2.gulp(__dirname + "/src/ui/", "realm-ui-tags.js", {
+         preffix: "realm.tags"
+      }))
+      .on('error', function(e) {
+         console.log(e.stack);
+         this.emit('end');
+      })
+      .pipe(gulp.dest('./build'));
+});
+
 gulp.task("riot", function() {
    return gulp.src("test-app/app/tags/**/*.tag")
       .pipe(riot({
@@ -53,7 +68,7 @@ gulp.task("riot", function() {
 });
 
 gulp.task('start', function() {
-   return runSequence('build-src', 'build-test', 'riot', function() {
+   return runSequence('build-src', 'build-test', 'ui-riot', 'riot', function() {
       runSequence('server')
 
       gulp.watch(['src/**/*.js'], function() {
@@ -66,6 +81,10 @@ gulp.task('start', function() {
          return realm.transpiler2.universal("test-app/", "build/app").then(function(changes) {
             runSequence('server')
          });
+      });
+
+      gulp.watch(['src/ui/**/*.tag'], function() {
+         runSequence('ui-riot');
       });
 
       gulp.watch(['test-app/app/tags/**/*.tag'], function() {

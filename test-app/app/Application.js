@@ -3,7 +3,9 @@ import IndexRoute from app.routes;
 
 class Application {
    static main() {
-      IndexRoute.start();
+      realm.requirePackage('realm.tags').then(function() {
+         IndexRoute.start();
+      });
    }
 }
 
