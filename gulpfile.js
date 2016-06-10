@@ -8,6 +8,8 @@ var _ = require('lodash')
 var realm = require('realm-js');
 var runSequence = require('run-sequence');
 var spawn = require('child_process').spawn;
+var uglify = require('gulp-uglify');
+var rename = require("gulp-rename");
 var node;
 
 gulp.task('server', function() {
@@ -20,6 +22,51 @@ gulp.task('server', function() {
          gulp.log('Error detected, waiting for changes...');
       }
    });
+});
+
+gulp.task('increment-version', function() {
+   gulp.src('./package.json')
+      .pipe(bump())
+      .pipe(gulp.dest('./'));
+});
+gulp.task('push', function(done) {
+   var publish = spawn('npm', ['publish'], {
+      stdio: 'inherit'
+   })
+   publish.on('close', function(code) {
+      if (code === 8) {
+         gulp.log('Error detected, waiting for changes...');
+      }
+      done()
+   });
+})
+gulp.task("publish", ['dist', 'increment-version'], function() {
+   runSequence('push')
+})
+
+gulp.task('dist', ['do-frontend'], function() {
+
+});
+gulp.task('dist-frontend', ['build-src', 'ui-riot'], function() {
+   return gulp.src([
+         "build/frontend.js",
+         "build/realm-ui-tags.js"
+      ])
+      .pipe(concat('realm.riot.js'))
+      .pipe(babel({
+         presets: ["es2016"]
+      }))
+      .pipe(gulp.dest("./build"))
+      .pipe(gulp.dest("./dist/frontend/"))
+});
+
+gulp.task('do-frontend', ['dist-frontend'], function() {
+   return gulp.src([
+         "dist/frontend/realm.riot.js"
+      ])
+      .pipe(rename('realm.riot.min.js'))
+      .pipe(uglify())
+      .pipe(gulp.dest("./dist/frontend/"))
 });
 
 gulp.task('watch', function() {
