@@ -10,6 +10,8 @@ var runSequence = require('run-sequence');
 var spawn = require('child_process').spawn;
 var uglify = require('gulp-uglify');
 var rename = require("gulp-rename");
+var bump = require('gulp-bump');
+
 var node;
 
 gulp.task('server', function() {
