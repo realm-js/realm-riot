@@ -1,107 +1,112 @@
 (function(___scope___) { "use strict"; var $isBackend = ___scope___.isNode; var realm  = ___scope___.realm;
 
-realm.module("app.routes.IndexRoute",["realm.riot.Router", "app.routes.PlaceRoute", "app.routes.TestRoute", "app.routes.UserRoute"],function(Router, PlaceRoute, TestRoute, UserRoute){ var $_exports;
+realm.module("app.services.ToDo",["realm.router.BridgeRequest"],function(BridgeRequest){ var $_exports;
+$_exports = {
+'add': function(){return BridgeRequest.connect("app.services.ToDo", "add", arguments)},
+'save': function(){return BridgeRequest.connect("app.services.ToDo", "save", arguments)},
+'getList': function(){return BridgeRequest.connect("app.services.ToDo", "getList", arguments)}
+}
+return $_exports;
+});
+realm.module("app.routes.IndexRoute",["realm.riot.Router", "app.routes.TodoRoute", "app.routes.ProfileRoute"],function(Router, TodoRoute, ProfileRoute){ var $_exports;
 
 class IndexRoute extends Router {
 
    initialize() {
-      console.log('IndexRoute initialize');
-      this.title = "Hello i am title";
-      return this.render('landing', function(tag) {
-
-      });
+      var self = this;
+      return this.render('index');
+   }
+   onTodo() {
+      return new TodoRoute();
+   }
+   onProfile(id) {
+      return new ProfileRoute(id);
    }
 
-   onTest() {
-      return new TestRoute();
-   }
-
-   onPlace(id) {
-      console.log('IndexRoute onPlace');
-      return new PlaceRoute();
-   }
-   onUser() {
-      console.log('IndexRoute onUser');
-      return new UserRoute();
-   }
 }
 
 $_exports = IndexRoute
 
 return $_exports;
 });
-realm.module("app.routes.PlaceDetails",["realm.riot.Router"],function(Router){ var $_exports;
+realm.module("app.routes.ProfileRoute",["realm.riot.Router", "app.routes.ProfileTabsRoute"],function(Router, ProfileTabsRoute){ var $_exports;
 
-class PlaceDetails extends Router {
 
-   initialize(placeId) {
-      console.log("PlaceDetails initialize")
-      return this.render('place-details', function(tag) {
-
-      });
+class ProfileRoute extends Router {
+   constructor(user) {
+      super();
+      this.user = user;
    }
+   initialize() {
+      return this.render('profile-index', function(tag) {
+         tag.user = this.user
+         tag.update();
+         return new ProfileTabsRoute(this.user);
+      })
 
-   onPukka() {
-      console.log("PlaceDetails onPukka")
-      return this.render('place-tab', function() {
-
-      });
-   }
-}
-
-$_exports = PlaceDetails
-
-return $_exports;
-});
-realm.module("app.routes.PlaceRoute",["realm.riot.Router", "app.routes.PlaceDetails"],function(Router, PlaceDetails){ var $_exports;
-class PlaceRoute extends Router {
-
-   initialize(placeId) {
-      console.log("PlaceRoute initialize", placeId);
-      return this.render('place-index', function() {
-         var details = new PlaceDetails();
-         details.place = "hello my place is here";
-         return details;
-      });
    }
 }
 
-$_exports = PlaceRoute
+
+$_exports = ProfileRoute;
 
 return $_exports;
 });
-realm.module("app.routes.TestRoute",["realm.riot.Router", "app.routes.PlaceRoute", "app.routes.UserRoute"],function(Router, PlaceRoute, UserRoute){ var $_exports;
+realm.module("app.routes.ProfileTabsRoute",["realm.riot.Router"],function(Router){ var $_exports;
 
-class TestRoute extends Router {
+class ProfileTabsRoute extends Router {
+   constructor(user) {
+      super();
+      this.user = user;
+   }
 
    initialize() {
-
-      return this.render('test-route');
+      return this.render('profile-tabs', function(tabs) {
+         this.tabs = tabs;
+         tabs.user = this.user
+         tabs.update();
+      });
    }
-   onHello() {
-      return this.render('hello');
+
+   updateSelected(name) {
+      this.profileTabs.active = name;
+      this.profileTabs.update();
+   }
+
+   onFirst() {
+      return this.render('profile-first', function() {
+         this.updateSelected('first');
+      });
+   }
+
+   onSecond() {
+      return this.render('profile-second', function() {
+         this.updateSelected('second');
+      });
+   }
+
+   onThird() {
+      return this.render('profile-third', function() {
+         this.updateSelected('third');
+      });
    }
 }
 
-$_exports = TestRoute
+
+$_exports = ProfileTabsRoute;
 
 return $_exports;
 });
-realm.module("app.routes.UserRoute",["realm.riot.Router"],function(Router){ var $_exports;
+realm.module("app.routes.TodoRoute",["realm.riot.Router"],function(Router){ var $_exports;
 
-class UserRoute extends Router {
-
+class TodoRoute extends Router {
    initialize() {
-      console.log("UserRoute initialize")
-      return this.render('user-index')
-   }
-   onActive() {
-      console.log("UserRoute onActive");
-      return this.render('user-active')
+      return this.render('todo');
    }
 }
 
-$_exports = UserRoute
+
+$_exports = TodoRoute;
 
 return $_exports;
 });

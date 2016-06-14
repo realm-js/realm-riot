@@ -1,34 +1,56 @@
 (function(___scope___) { "use strict"; var $isBackend = ___scope___.isNode; var realm  = ___scope___.realm;
 
-riot.tag2('hello', '<div> this is Hello </div>', '', '', function(opts) {
+riot.tag2('index', '<div class="ui borderless main menu"><div class="ui text container"><div href="/" class="header item"> Realm riot </div><a href="/todo" class="item {active : opts.route.activeTab === \'todo\'}">ToDo</a><a href="/profile/test-user" class="item">Profile</a></div></div><div route class="ui text container"></div>', '', '', function(opts) {
+      var route = this.route = opts.route;
 });
 
-riot.tag2('landing', '<h1>Hello world {user.name}</h1> asdf <form><ui-input model="user.name"></ui-input></form><div><a href="/">HOME</a></div><div><a href="/place/some-route-here/">To a place</a></div><div><a href="/place/some-route-here/pukka">To a place tab</a></div><div><a href="/user">To user</a></div><div><a href="/user/active">To active user</a></div><div><a href="/test">To TEST</a></div><div><a href="/test/hello">To test hello</a></div> Shit goes here:---><div route></div>', '', '', function(opts) {
-      this.user = {
-         name: "hello"
-      }
+realm.module("app.tags.todo",["app.services.ToDo"],function(toDoService){ var $_exports;
+riot.tag2('todo', '<h2>Todo</h2><table class="ui compact celled definition table"><thead><tr><th></th><th width="20">id</th><th>Title</th></tr></thead><tbody><tr each="{item in list}" class="{active : item.done}"><td class="collapsing"><input type="checkbox" __checked="{item.done}" onclick="{parent.toggleDone}"></td><td>{item.id}</td><td>{item.title}</td></tr></tbody><tfoot class="full-width"><tr><th></th><th colspan="4"><form class="ui form" onsubmit="{addToDo}"><div class="field"><input type="text" name="newTodo" placeholder="What\'s on you mind?"></div><div class="ui right floated small primary labeled icon button"><i class="icon plus"></i> Add todo </div></form></th></tr></tfoot></table>', '', '', function(opts) {
+
       var self = this;
-      this.on("model-changed", function (name, value) {
-         self.update();
-      });
+
+
+      this.getList = function () {
+         toDoService.getList().then(function (result) {
+            self.list = result;
+            self.update();
+         })
+      }
+      this.toggleDone = function (e) {
+         var todo = e.item.item;
+         todo.done = todo.done
+            ? false
+            : true;
+         toDoService.save(todo);
+      }
+
+      this.addToDo = function () {
+         if (self.newTodo.value) {
+            toDoService.add(self.newTodo.value).then(function (data) {
+               self.list.push(data);
+               self.update();
+            });
+         }
+      }
+
+      this.getList();
 });
 
-riot.tag2('test-route', '<h1>TEST ROUTE!!</h1><div route style="border:1px solid black"></div>', '', '', function(opts) {
+return $_exports;
+});
+riot.tag2('profile-index', '<h2>Profile {user}</h2><div route></div>', '', '', function(opts) {
 });
 
-riot.tag2('user-active', '<h3>Active users</h3>', '', '', function(opts) {
+riot.tag2('profile-tabs', '<div class="ui pointing secondary menu"><a class="item {active : active === \'first\'}" href="/profile/{user}/first">First</a><a class="item {active : active === \'second\'}" href="/profile/{user}/second">Second</a><a class="item {active : active === \'third\'}" href="/profile/{user}/third">Third</a></div><div class="ui tab segment active" route></div>', '', '', function(opts) {
 });
 
-riot.tag2('user-index', '<h2>User index</h2><div style="border:1px solid pink" route></div>', '', '', function(opts) {
+riot.tag2('profile-first', '<h3>First</h3>', '', '', function(opts) {
 });
 
-riot.tag2('place-details', '<h2>this is place details</h2><div style="margin-left:100px; border:1px solid blue" route></div>', '', '', function(opts) {
+riot.tag2('profile-second', '<h3>Second</h3>', '', '', function(opts) {
 });
 
-riot.tag2('place-index', '<h2>this is place</h2><div style="border:1px solid red;" route></div>', '', '', function(opts) {
-});
-
-riot.tag2('place-tab', '<h2>this is place tab!!!</h2>', '', '', function(opts) {
+riot.tag2('profile-third', '<h3>Third</h3>', '', '', function(opts) {
 });
 
 

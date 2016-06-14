@@ -8,7 +8,23 @@ var $rootRoute;
 var url2Method = function(url) {
    return "on" + url[0].toUpperCase() + url.slice(1, url.length);
 }
-
+var tagName2Variable = function(tagName) {
+   var name = [];
+   var nextUpperCase = false;
+   _.each(tagName, function(symbol) {
+      if (symbol === "-") {
+         nextUpperCase = true;
+      } else {
+         if (nextUpperCase) {
+            nextUpperCase = false;
+            name.push(symbol.toUpperCase());
+         } else {
+            name.push(symbol);
+         }
+      }
+   });
+   return name.join('');
+}
 document.querySelector('body').addEventListener('click', function(e) {
    var target = e.target;
    if (target.nodeName === "A") {
@@ -225,6 +241,8 @@ class Dispatcher {
          var mountTarget = targetTag.root.querySelector("*[route]");
          if (mountTarget) {
             data.parent.$$router.data = data;
+            var variableName = tagName2Variable(data.tag);
+            data.parent[variableName] = targetTag;
             self.register(mountTarget, targetTag, data.parent)
          }
       }

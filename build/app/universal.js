@@ -4,7 +4,10 @@ realm.module("app.Application",["app.routes.IndexRoute"],function(IndexRoute){ v
 
 class Application {
    static main() {
-      realm.requirePackage('realm.tags').then(function() {
+      var packages = ['realm.tags', 'app.tags'];
+      realm.each(packages, function(_p) {
+         return realm.requirePackage(_p)
+      }).then(function() {
          IndexRoute.start();
       });
    }
