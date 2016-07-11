@@ -3,7 +3,6 @@
 realm.module("realm.tags.form.ui-checkbox",["realm.riot.AngularModel"],function(AngularModel){ var $_exports;
 riot.tag2('ui-checkbox', '<input id="{$name}" type="checkbox"><label style="cursor:pointer" for="{$name}" if="{opts.label}">{opts.label}</label>', '', '', function(opts) {
 
-
       var input = new AngularModel(this);
       this.$name = "id_" + new Date().getTime();
       input.$update = true;
@@ -31,7 +30,6 @@ return $_exports;
 });
 realm.module("realm.tags.form.ui-input",["realm.riot.AngularModel"],function(AngularModel){ var $_exports;
 riot.tag2('ui-input', '<label if="{opts.label}">{opts.label}</label><input type="text" name="{opts.name}" placeholder="{opts.placeholder}">', '', '', function(opts) {
-
 
       var input = new AngularModel(this);
 
@@ -69,7 +67,6 @@ return $_exports;
 });
 realm.module("realm.tags.form.ui-textarea",["realm.riot.AngularModel"],function(AngularModel){ var $_exports;
 riot.tag2('ui-textarea', '<label if="{opts.title}">{opts.title}</label><textarea name="{opts.name}" placeholder="{opts.placeholder}"></textarea>', '', '', function(opts) {
-
 
       var input = new Model(this);
 

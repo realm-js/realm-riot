@@ -5,10 +5,9 @@ realm.module("app.Server",["realm.server.Express"],function(Express){ var $_expo
 class Server extends Express {
 
    configure() {
-      this.port = 5001;
+      this.port = 5005;
       this.serve("/dependencies/", "@default");
       this.serve("/build/", "@home/build");
-
 
       this.serve("/lib/riot", "@home/node_modules/riot/");
       this.serve("/static", "@home/static/");
@@ -29,8 +28,9 @@ class Server extends Express {
 
       this.addStyles(['/static/css/main.css', '/static/css/semantic.min.css']);
 
-      this.bindIndex(/^\/(?!api|_realm_|favicon.ico).*/, {
+      this.bindIndex(/^\/(?!api|_realm_|favicon.ico)admin.*/, {
          application: 'app.Application',
+         base: "/admin",
          title: "Test Application"
       });
 

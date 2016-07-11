@@ -9,7 +9,6 @@ riot.tag2('todo', '<h2>Todo</h2><table class="ui compact celled definition table
 
       var self = this;
 
-
       this.getList = function () {
          toDoService.getList().then(function (result) {
             self.list = result;

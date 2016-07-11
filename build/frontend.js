@@ -1140,9 +1140,6 @@ realm.module("realm.riot.Dispatcher",["utils.lodash", "realm.riot.PushState"],fu
 
 var $rootRoute;
 
-var url2Method = function(url) {
-   return "on" + url[0].toUpperCase() + url.slice(1, url.length);
-}
 var tagName2Variable = function(tagName) {
    var name = [];
    var nextUpperCase = false;
@@ -1160,11 +1157,28 @@ var tagName2Variable = function(tagName) {
    });
    return name.join('');
 }
+var base = document.querySelector("base");
+var baseURL, baseURLFull
+if (base) {
+   baseURLFull = base.getAttribute("href");
+   baseURL = baseURLFull.split("/");
+
+}
+
+var url2Method = function(url) {
+   url = tagName2Variable(url);
+   return "on" + url[0].toUpperCase() + url.slice(1, url.length);
+}
+
 document.querySelector('body').addEventListener('click', function(e) {
    var target = e.target;
    if (target.nodeName === "A") {
       if (target.getAttribute('href')) {
-         PushState.force({}, target.getAttribute('href'));
+         var l = target.getAttribute('href');
+         if (baseURLFull) {
+            l = baseURLFull + l;
+         }
+         PushState.force({}, l);
          e.preventDefault();
          e.stopPropagation();
       }
@@ -1237,7 +1251,25 @@ class Dispatcher {
     */
    getPaths() {
       var path = window.location.pathname;
-      return path.split("/")
+      var data = path.split("/");
+
+      var toSplice;
+      if (baseURL) {
+         toSplice = 0;
+         _.each(data, function(p, index) {
+            if (baseURL[index] !== undefined) {
+               if (p === baseURL[index]) {
+                  toSplice = index;
+               }
+            } else {
+               return;
+            }
+         });
+      }
+      if (toSplice >= 0) {
+         data.splice(toSplice++, 1);
+      }
+      return data;
    }
 
    getFullURL() {

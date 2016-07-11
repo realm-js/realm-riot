@@ -4,7 +4,7 @@ import Express from realm.server;
 class Server extends Express {
 
    configure() {
-      this.port = 5001;
+      this.port = 5005;
       this.serve("/dependencies/", "@default");
       this.serve("/build/", "@home/build");
 
@@ -27,8 +27,9 @@ class Server extends Express {
 
       this.addStyles(['/static/css/main.css', '/static/css/semantic.min.css']);
 
-      this.bindIndex(/^\/(?!api|_realm_|favicon.ico).*/, {
+      this.bindIndex(/^\/(?!api|_realm_|favicon.ico)admin.*/, {
          application: 'app.Application',
+         base: "/admin",
          title: "Test Application"
       });
 

@@ -1138,7 +1138,32 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
       var $rootRoute;
 
+      var tagName2Variable = function tagName2Variable(tagName) {
+         var name = [];
+         var nextUpperCase = false;
+         _.each(tagName, function (symbol) {
+            if (symbol === "-") {
+               nextUpperCase = true;
+            } else {
+               if (nextUpperCase) {
+                  nextUpperCase = false;
+                  name.push(symbol.toUpperCase());
+               } else {
+                  name.push(symbol);
+               }
+            }
+         });
+         return name.join('');
+      };
+      var base = document.querySelector("base");
+      var baseURL, baseURLFull;
+      if (base) {
+         baseURLFull = base.getAttribute("href");
+         baseURL = baseURLFull.split("/");
+      }
+
       var url2Method = function url2Method(url) {
+         url = tagName2Variable(url);
          return "on" + url[0].toUpperCase() + url.slice(1, url.length);
       };
 
@@ -1146,7 +1171,11 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
          var target = e.target;
          if (target.nodeName === "A") {
             if (target.getAttribute('href')) {
-               PushState.force({}, target.getAttribute('href'));
+               var l = target.getAttribute('href');
+               if (baseURLFull) {
+                  l = baseURLFull + l;
+               }
+               PushState.force({}, l);
                e.preventDefault();
                e.stopPropagation();
             }
@@ -1233,7 +1262,25 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
             key: "getPaths",
             value: function getPaths() {
                var path = window.location.pathname;
-               return path.split("/");
+               var data = path.split("/");
+
+               var toSplice;
+               if (baseURL) {
+                  toSplice = 0;
+                  _.each(data, function (p, index) {
+                     if (baseURL[index] !== undefined) {
+                        if (p === baseURL[index]) {
+                           toSplice = index;
+                        }
+                     } else {
+                        return;
+                     }
+                  });
+               }
+               if (toSplice >= 0) {
+                  data.splice(toSplice++, 1);
+               }
+               return data;
             }
          }, {
             key: "getFullURL",
@@ -1387,6 +1434,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                   var mountTarget = targetTag.root.querySelector("*[route]");
                   if (mountTarget) {
                      data.parent.$$router.data = data;
+                     var variableName = tagName2Variable(data.tag);
+                     data.parent[variableName] = targetTag;
                      self.register(mountTarget, targetTag, data.parent);
                   }
                }
